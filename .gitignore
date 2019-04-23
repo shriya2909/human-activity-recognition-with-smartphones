@@ -1,3 +1,9 @@
 # Ignore pushing dataset
 data/
+models/
+practice/
 exploratory_analysis/.ipynb_checkpoints
+preprocessing/.ipynb_checkpoints
+preprocessing/__pycache__
+preprocessing/Data\ Preprocessing.ipynb
+preprocessing/Data Preprocessing-Copy1.ipynb

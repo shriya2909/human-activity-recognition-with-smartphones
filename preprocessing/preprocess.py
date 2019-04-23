@@ -113,9 +113,31 @@ class SequenceHandler:
 		self.sequence_1d = pd.DataFrame(data=self.sequence_1d, columns=new_colnames)
 		print(f'Sequence samples generated - {self.sequence_1d.shape[0]} sequences rows,  {self.sequence_1d.shape[1]-3} feature columns + 2 helper columns + 1 class column. \n(Now sequence 1-dim is accessible) ', flush=True) 
 
+	def convert_sequence_to_2D_sample(self):
+		print('Generating 2D view of sequence data ...', flush=True)
+		seq_num_rows, seq_num_cols = 0,0
+
+		# Fetch sequence df dimensions
+		for seq_id, seq_df in self.sequence.items():
+			seq_num_rows, seq_num_cols = seq_df.shape
+			break
+
+		# Intializing stuff
+		num_samples = len(self.sequence)
+		self.sequence_2d_x, self.sequence_2d_y = np.zeros((num_samples, seq_num_rows, seq_num_cols-3)), ['']*num_samples
+
+		index_sample = 0
+		for seq_id, seq_df in self.sequence.items():
+			self.sequence_2d_x[index_sample, :,:] = seq_df.iloc[:,:-3].values
+			self.sequence_2d_y[index_sample] = seq_df.iloc[0,-1]
+			index_sample = index_sample + 1
+		print(f'Sequence samples generated - design matrix (#samples, #time_steps, #features) = {self.sequence_2d_x.shape}, class vector (#samples) = ({len(self.sequence_2d_y)}). (Now sequence 2-dim is accessible) ', flush=True)
+
 	def get_sequence(self, dims=1):
 		if dims == 1:
 			return self.sequence_1d # sequences in 1-dimension 
+		if dims ==2:
+			return (self.sequence_2d_x, self.sequence_2d_y) # sequence in 2-dims
 		else:
 			return self.sequence # dictionary of all sequences in 2-dimensions
 
